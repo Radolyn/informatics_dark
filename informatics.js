@@ -90,7 +90,7 @@
         height: 30px;
     }
 
-    tr, #header, #Searchresult, #SearchresultLoading, .current, .combobox_button, .combobox_container, #combobox_container_lang_id > span, .pagination a, .box, .generalbox {
+    tr, #header, #Searchresult, #SearchresultLoading, .current, .combobox_button, #combobox_container_lang_id > span, .pagination a, .box, .generalbox {
         border: solid 1px ${darkLighterColor};
     }
 
