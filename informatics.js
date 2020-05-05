@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Informatics dark theme
 // @namespace    https://radolyn.com/
-// @version      0.1
+// @version      0.2
 // @description  Turns Informatics into dark mode!
 // @author       radolyn.com
 // @match        https://informatics.msk.ru
@@ -9,13 +9,15 @@
 // @include      https://informatics.msk.ru/*
 // @include      https://informatics.mccme.ru/*
 // @require      https://code.jquery.com/jquery-3.5.1.min.js
+// @updateURL    https://raw.githubusercontent.com/Radolyn/informatics_dark/master/informatics.js
+// @downloadURL  https://raw.githubusercontent.com/Radolyn/informatics_dark/master/informatics.js
 // @run-at       document-body
 // @grant        GM_addStyle
 // @grant        GM_log
 // ==/UserScript==
 
 (function () {
-  "use strict";
+  ("use strict");
 
   const removeElements = (elms) => elms.forEach((el) => el.remove());
 
@@ -26,7 +28,7 @@
   var textLighterColor = "#9E9E9E !important";
 
   var css = `
-    body, .header, .title, .skip-block, #header, #header-home, .content, .side, .navbar, .combobox_summary, .window_panel, .ui-draggable, .ui-resizable {
+    body, .header, .title, .skip-block, #header, #header-home, .content, .side, .navbar, .combobox_summary, pre, .ui-widget-header, .ui-widget-content, #source-textarea, .bootstrap, .well-small, .ui-state-active {
         background-color: ${darkColor};
         background: ${darkColor};
     }
@@ -66,15 +68,15 @@
         background-color: ${darkLighterColor};
     }
 
-    code {
+    code, #source-textarea {
         color: ${textLighterColor};
     }
 
-    .navbar {
+    .navbar, .ui-state-active {
         background: url() !important;
     }
 
-    #header > p {
+    #header > p, #header-home > p {
         margin-left: 42.5px;
         margin-top: 7.5px;
     }
@@ -84,7 +86,7 @@
         margin-right: 10px;
     }
 
-    #header {
+    #header, #header-home {
         height: 30px;
     }
 
@@ -96,23 +98,24 @@
         width: 147px !important;
     }
 
-    #layout-table {
-        width: 80%;
+    #layout-table, #content {
+        width: 85%;
     }
 
-    .course-content {
-        margin-left: 15%;
+    .course-content, #content {
+        margin-left: 10%;
     }
     `;
 
-  // убираем божественный логотип
-  removeElements(document.querySelectorAll("#header > h1"));
-  // убираем унопки навигации по задачам (кто-то их использует?)
-  removeElements(document.querySelectorAll(".bigicon"));
+  GM_addStyle(css);
+
   // убираем описание курса
   removeElements(document.querySelectorAll("#inst2"));
-  removeElements(document.querySelectorAll("#left-column"));
-  removeElements(document.querySelectorAll("#stars"));
+  removeElements(
+    document.querySelectorAll(
+      "#content > table > tbody > tr:nth-child(1) > td > table > tbody > tr"
+    )
+  );
 
   var h = document.createElement("p");
 
@@ -120,7 +123,20 @@
   h.appendChild(text);
 
   var header = document.querySelector("#header");
+
+  if (header == null) {
+    header = document.querySelector("#header-home");
+    removeElements(document.querySelectorAll("#header-home > h1"));
+  } else {
+    removeElements(document.querySelectorAll("#header > h1"));
+  }
+
   header.appendChild(h);
 
-  GM_addStyle(css);
+  setTimeout(
+    () => removeElements(document.querySelectorAll("#left-column")),
+    75
+  ); // P.S. на главной странице убирает левую колонку
+  setTimeout(() => removeElements(document.querySelectorAll("#stars")), 75); // P.S. убирает 'избранное:'
+  setTimeout(() => removeElements(document.querySelectorAll(".bigicon")), 75); // убираем унопки навигации по задачам (кто-то их использует?)
 })();
